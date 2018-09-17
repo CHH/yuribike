@@ -3,13 +3,15 @@
     <div class="fixed z-10 pin-l pin-t mt-8 ml-8 bg-white w-1/4 shadow-lg rounded-lg max-h-screen overflow-y-auto">
       <div class="flex mt-4 ml-4 mr-4 mb-0">
         <i class="fas fa-bicycle fa-2x fa-fw self-center"></i>
-        <h1 class="flex-1 self-center pl-4">YURIBIKE</h1>
+        <h1 class="flex-1 self-center pl-4 font-black tracking-wide">
+          YURI<span class="text-yellow-dark">BIKE</span>
+        </h1>
       </div>
 
       <form action="" class="p-4" @submit.prevent="search">
         <input
           type="search"
-          class="w-full rounded-lg p-3 bg-grey-lighter"
+          class="w-full rounded-lg p-3 bg-grey-lighter leading-normal font-bold"
           placeholder="Gib deine Stadt ein"
           v-model="searchQuery"
         />
@@ -18,7 +20,7 @@
       <!-- Results -->
 
       <section class="pb-4">
-        <h2 class="font-black text-red pl-4 pr-4">Deine Favoriten</h2>
+        <h2 class="font-black text-yellow-dark pl-4 pr-4">Deine Favoriten</h2>
 
         <article class="relative flex hover:bg-grey-lighter rounded" v-for="city in favorites" :key="`favorite-${city.uid}`">
           <div class="flex pt-2 pb-2 pr-2 pl-4 self-center">
@@ -28,11 +30,11 @@
             <h3 class="mt-0 mb-1">
               {{ city.name }}
             </h3>
-            <p class="text-grey-dark mb-0">
+            <p class="text-grey-dark mb-0 text-sm">
               {{ city.available_bikes }} verfügbar
             </p>
             <button class="absolute pin-r pin-t w-full h-full pr-4 text-right" @click="showCity(city)">
-              <i class="fas fa-chevron-circle-right text-red"></i>
+              <i class="fas fa-chevron-circle-right text-yellow-dark"></i>
             </button>
           </div>
         </article>
@@ -43,13 +45,13 @@
 
         <article class="relative flex hover:bg-grey-lighter rounded" v-for="city in cities" :key="city.uid">
           <div class="flex pt-2 pb-2 pr-2 pl-4 self-center">
-            <i class="fas fa-map-marker fa-2x fa-fw text-yellow-dark" aria-hidden="true"></i>
+            <i class="fas fa-map-pin fa-2x fa-fw text-yellow-dark" aria-hidden="true"></i>
           </div>
           <div class="flex-1 pl-2 pt-2 pb-2 pr-2 self-center">
             <h3 class="mt-0 mb-1">
               {{ city.name }}
             </h3>
-            <p class="text-grey-dark mb-0">
+            <p class="text-grey-dark mb-0 text-sm">
               {{ city.available_bikes }} verfügbar
             </p>
             <button class="absolute pin-r pin-t w-full h-full pr-4 text-right" @click="showCity(city)">
@@ -62,7 +64,7 @@
       <section v-if="current" class="pb-4">
         <h2 class="font-black text-yellow-dark pl-4 pr-4">{{ current.name }}</h2>
 
-        <form class="pl-4 pr-4 pt-3 pb-2" v-if="current.places.length > 1">
+        <form class="pl-4 pr-4 pt-3 pb-2" v-if="current.places.length > 1" action="">
           <select
             class="w-full"
             name="place"
@@ -75,32 +77,32 @@
           </select>
         </form>
 
-        <article class="pl-4 pr-4 pt-2 pb-2">
-          <header class="flex">
-            <h3 class="flex-1 mt-1 mb-1">
+        <article class="pt-2">
+          <header class="flex pl-4 pr-4">
+            <h3 class="flex-1 mt-1 mb-1 font-bold leading-tight">
               {{ place.name }}
             </h3>
             <button class="self-center" aria-label="Anzeigen" @click="selectPlace(place.uid)">
-              <i class="fas fa-search-plus text-grey" aria-hidden="true"></i>
+              <i class="fas fa-search-plus text-yellow-dark" aria-hidden="true"></i>
             </button>
           </header>
 
-          <article v-for="(count, type) in place.bike_types" :key="type" class="flex">
-            <div class="flex self-center pt-2 pb-2 pr-2">
+          <article v-for="(count, type) in place.bike_types" :key="type" class="flex rounded hover:bg-grey-lighter">
+            <div class="flex self-center pt-2 pb-2 pr-2 pl-4">
               <i class="fas fa-bicycle fa-fw fa-2x" :class="{'text-green': count > 0, 'text-red': count === 0}"></i>
             </div>
             <div class="flex-1 self-center pl-2 pt-2 pb-2 pr-2">
-              <h4>
+              <h4 class="font-semibold">
                 <span v-if="type == 4">CLASSICbike</span>
                 <span v-else-if="type == 5">e-CLASSICbike</span>
                 <span v-else-if="type == 'undefined'">ECObike</span>
               </h4>
-              <p class="text-grey-dark">
+              <p class="text-grey-dark text-sm">
                 {{ count }} verfügbar
               </p>
             </div>
-            <div class="flex self-center">
-              <button class="rounded pt-2 pb-2 pl-3 pr-3 text-white font-bold" :class="{'bg-green-dark': count > 0, 'bg-grey': count === 0}">
+            <div class="flex self-center pr-4">
+              <button class="rounded pt-2 pb-2 pl-3 pr-3 text-white font-bold" :class="{'bg-green': count > 0, 'bg-grey': count === 0}">
                 Fahren
               </button>
             </div>
@@ -108,8 +110,8 @@
         </article>
       </section>
 
-      <p class="text-grey text-sm p-4">
-        Daten: Creative Commons Namensnennung 3.0 Österreich nextbike GmbH
+      <p class="text-grey-dark text-sm p-4 bg-grey-lighter font-semibold shadow-inner">
+        Daten: © nextbike GmbH (CC-Namensnennung 3.0 Österreich)
       </p>
     </div>
 
@@ -163,6 +165,7 @@ export default {
       })
       this.current = city
       this.place = city.places[0]
+      this.searchQuery = city.name
     },
 
     selectPlace (uid) {
