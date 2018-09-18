@@ -4,9 +4,6 @@
       <h3 class="flex-1 mt-1 mb-1 font-bold leading-tight">
         {{ place.name }}
       </h3>
-      <button class="self-center" aria-label="Anzeigen" @click="$emit('zoom', place)">
-        <i class="fas fa-search-plus text-yellow-dark" aria-hidden="true"></i>
-      </button>
     </header>
 
     <article

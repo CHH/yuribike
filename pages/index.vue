@@ -111,6 +111,10 @@ export default {
     },
 
     showPlace (place) {
+      if (!place) {
+        return
+      }
+
       this.$set(this, 'mapFly', {
         center: {
           lng: place.lng, lat: place.lat,

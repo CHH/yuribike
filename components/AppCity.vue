@@ -18,7 +18,6 @@
     <app-place
       class="pt-2"
       :place="place"
-      @zoom="selectPlace($event.uid)"
     />
   </section>
 </template>
@@ -44,6 +43,7 @@ export default {
   methods: {
     selectPlace (uid) {
       this.place = this.city.places.filter(place => place.uid == uid)[0]
+
       this.$emit('change-place', this.place)
     },
   }
