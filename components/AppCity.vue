@@ -2,7 +2,7 @@
   <section class="city">
     <div class="flex">
       <h2 class="flex-1 font-black text-yellow-dark pl-4 pr-4">{{ city.name }}</h2>
-      <div v-if="favorites" class="mr-4 self-center">
+      <div class="mr-4 self-center" v-if="favorites">
         <button @click="toggleLike">
           <i class="fas fa-heart fa-fw text-grey" :class="{'text-red': favorites.indexOf(`${city.uid}`) !== -1}"></i>
         </button>
@@ -32,27 +32,30 @@
 <script>
 import AppPlace from '~/components/AppPlace'
 import axios from 'axios'
+import { mapState } from 'vuex'
 
 export default {
   components: {
     AppPlace,
   },
+
   props: {
     city: {
       type: Object,
       required: true,
     }
   },
-  async created () {
-    const { data: { favorites } } = await axios.get(`/api/favorites`)
-    this.favorites = favorites
-  },
+
   data () {
     return {
-      favorites: null,
       place: this.city.places[0] || null
     }
   },
+
+  computed: {
+    ...mapState(['favorites'])
+  },
+
   methods: {
     selectPlace (uid) {
       this.place = this.city.places.filter(place => place.uid == uid)[0]
@@ -61,17 +64,7 @@ export default {
     },
 
     async toggleLike () {
-      let req
-
-      if (this.favorites.indexOf(`${this.city.uid}`) !== -1) {
-        req = axios.delete(`/api/favorites/${this.city.uid}`)
-      } else {
-        req = axios.put(`/api/favorites/${this.city.uid}`)
-      }
-
-      const { data: { favorites } } = await req
-
-      this.favorites = favorites
+      await this.$store.dispatch('favorite', { uid: '' + this.city.uid })
     }
   }
 }

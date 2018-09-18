@@ -19,7 +19,7 @@
 
       <!-- Results -->
 
-      <section class="pb-4">
+      <section class="pb-4" v-if="cities">
         <h2 class="font-black text-yellow-dark pl-4 pr-4">Deine Favoriten</h2>
 
         <app-city-list-item
@@ -36,7 +36,7 @@
         <h2 class="font-black text-yellow-dark pl-4 pr-4">In deiner Nähe</h2>
 
         <app-city-list-item
-          v-for="city in cities"
+          v-for="city in recommended"
           :key="city.uid"
           :city="city"
           @click="showCity(city)"
@@ -73,33 +73,49 @@ export default {
     AppCityListItem,
     AppCity,
   },
-  async asyncData ({ isDev }) {
-    const apiBaseUrl = isDev && process.server ? 'http://localhost:3000' : ''
 
-    const { data: { countries } } = await axios.get('http://nextbike.net/maps/nextbike-official.json?domains=la,at')
-    const { cities } = countries[0]
-    const { data: { favorites: favoriteIds } } = await axios.get(`${apiBaseUrl}/api/favorites`)
-
-    const favorites = cities.filter(city => {
-      return favoriteIds.indexOf(`${city.uid}`) !== -1
-    })
-
+  async asyncData () {
     return {
-      country: countries[0],
+      country: null,
       mapCenter: {
         lng: 14.87, lat: 48.125
       },
       mapZoom: 12,
-      favorites,
-      cities: cities.filter(city => {
-        return ['Amstetten', 'Lunz am See', 'St.Pölten'].indexOf(city.name) !== -1
-      }),
+      cities: null,
+      recommended: null,
       city: null,
       place: null,
       mapFly: null,
       searchQuery: null,
     }
   },
+
+  computed: {
+    favorites () {
+      if (this.$store.state.favorites.length === 0) {
+        return []
+      }
+
+      return this.cities.filter(city => {
+        return this.$store.state.favorites.indexOf(`${city.uid}`) !== -1
+      })
+    }
+  },
+
+  async created () {
+    await this.$store.dispatch('getFavorites')
+
+    const { data: { countries } } = await axios.get('http://nextbike.net/maps/nextbike-official.json?domains=la,at')
+    const { cities } = countries[0]
+
+    this.country = countries[0]
+    this.cities = cities
+
+    this.recommended = cities.filter(city => {
+      return ['Amstetten', 'Lunz am See', 'St.Pölten'].indexOf(city.name) !== -1
+    })
+  },
+
   methods: {
     showCity (city) {
       this.$set(this, 'mapFly', {
