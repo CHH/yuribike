@@ -49,9 +49,6 @@ export default {
       this.$emit('fly', { ...to })
     }
   },
-  created () {
-
-  },
   methods: {
     mapLoad (map) {
       axios.get('http://nextbike.net/maps/nextbike-official.json?domains=la,at').then(res => {

@@ -129,6 +129,7 @@ export default {
   components: {
     AppMap
   },
+
   async asyncData () {
     const { data: { countries } } = await axios.get('http://nextbike.net/maps/nextbike-official.json?domains=la,at')
     const cities = countries[0].cities
@@ -155,6 +156,7 @@ export default {
       searchQuery: null,
     }
   },
+
   methods: {
     showCity (city) {
       this.$set(this, 'mapFly', {
