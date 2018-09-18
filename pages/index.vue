@@ -73,12 +73,15 @@ export default {
     AppCityListItem,
     AppCity,
   },
-  async asyncData () {
+  async asyncData ({ isDev }) {
+    const apiBaseUrl = isDev && process.server ? 'http://localhost:3000' : ''
+
     const { data: { countries } } = await axios.get('http://nextbike.net/maps/nextbike-official.json?domains=la,at')
-    const cities = countries[0].cities
-    const favoriteCityNames = ['Amstetten']
+    const { cities } = countries[0]
+    const { data: { favorites: favoriteIds } } = await axios.get(`${apiBaseUrl}/api/favorites`)
+
     const favorites = cities.filter(city => {
-      return favoriteCityNames.indexOf(city.name) !== -1
+      return favoriteIds.indexOf(`${city.uid}`) !== -1
     })
 
     return {
