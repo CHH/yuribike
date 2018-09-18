@@ -19,7 +19,7 @@
 
       <!-- Results -->
 
-      <section class="pb-4" v-if="cities">
+      <section class="pb-4" v-if="cities && favorites.length > 0">
         <h2 class="font-black text-yellow-dark pl-4 pr-4">Deine Favoriten</h2>
 
         <app-city-list-item
@@ -145,7 +145,7 @@ export default {
     search () {
       const query = this.searchQuery
 
-      const result = this.country.cities.filter(city => {
+      const result = this.cities.filter(city => {
         return city.name.startsWith(query)
       })
 

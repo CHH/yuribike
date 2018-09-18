@@ -35,10 +35,20 @@ export const actions = {
   async favorite ({ commit, state }, { uid }) {
     if (state.favorites.indexOf(`${uid}`) !== -1) {
       commit('removeFavorite', { uid })
-      await axios.delete(`${apiBaseUrl}/api/favorites/${uid}`)
+
+      try {
+        await axios.delete(`${apiBaseUrl}/api/favorites/${uid}`)
+      } catch (err) {
+        commit('addFavorite', { uid })
+      }
     } else {
       commit('addFavorite', { uid })
-      await axios.put(`${apiBaseUrl}/api/favorites/${uid}`)
+
+      try {
+        await axios.put(`${apiBaseUrl}/api/favorites/${uid}`)
+      } catch (err) {
+        commit('removeFavorite', { uid })
+      }
     }
   },
 
